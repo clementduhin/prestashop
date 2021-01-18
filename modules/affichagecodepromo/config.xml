@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+    <name>affichagecodepromo</name>
+    <displayName><![CDATA[Code promo en bas de page]]></displayName>
+    <version><![CDATA[1.0.0]]></version>
+    <description><![CDATA[Ajoute un texte de code promo personnalisable et le code promo saisi cr&eacute;&eacute; dans votre back office]]></description>
+    <author><![CDATA[Cl&eacute;ment Duhin]]></author>
+    <tab><![CDATA[front_office_features]]></tab>
+	<confirmUninstall><![CDATA[Êtes-vous sûr de vouloir désinstaller ce module ?]]></confirmUninstall>
+    <is_configurable>1</is_configurable>
+    <need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+</module>

@@ -4,10 +4,10 @@
         exit;
     }
 
-class CodePromoFooter extends Module {
+class AffichageCodePromo extends Module {
     public function __construct()
     {
-        $this->name = 'codepromofooter';
+        $this->name = 'affichagecodepromo';
         $this->tab = 'front_office_features';
         $this->version = '1.0.0';
         $this->author = 'Clément Duhin';
@@ -16,17 +16,16 @@ class CodePromoFooter extends Module {
             'min' => '1.7',
             'max' => _PS_VERSION_
         ];
+        $this->context = Context::getContext();
+
         $this->bootstrap = true;
  
         parent::__construct();
  
-        $this->displayName = $this->l("Code promo en bas de page");
-        $this->description = $this->l("Ajoute un texte de code promo personnalisable et le code promo saisi créé dans votre back office");
+        $this->displayName = $this->l("Affichage d'un code promo");
+        $this->description = $this->l("Permet d'ajouter un message contenant un code promotionnel");
         $this->confirmUninstall = $this->l('Êtes-vous sûr de vouloir désinstaller ce module ?');
- 
-        if (!Configuration::get('TESTCREATE_PAGENAME')) {
-            $this->warning = $this->l('Aucun nom fourni');
-        }
+
     }
 
         public function install()
@@ -35,15 +34,17 @@ class CodePromoFooter extends Module {
             return Shop::setContext(Shop::CONTEXT_ALL);
         }
         return parent::install();
-        $this->registerHook('displayHome')&&
-        Configuration::updateValue('TEXTPROMO')&&
-        Configuration::updateValue('CODEPROMO');
+        $this->registerHook('displayTop')&&
+        $this->registerHook('displayLeftColumn')&&
+        $this->registerHook('header')&&
+        Configuration::updateValue('TEXTPROMO', '')&&
+        Configuration::updateValue('CODEPROMO', '');
     }
  
     public function uninstall()
     {
-        return parent::uninstall()&&
-        Configuration::deleteByName('TEXTPROMO')&&
+        return parent::uninstall() &&
+        Configuration::deleteByName('TEXTPROMO') &&
         Configuration::deleteByName('CODEPROMO');
     }
 
@@ -61,7 +62,7 @@ class CodePromoFooter extends Module {
                 $output.=$this->displayConfirmation($this->l("Update successful"));
             }
         }
-        return $output.$this->displayForm();
+        return $output . $this->displayForm();
     }
 
     public function displayForm()
@@ -119,9 +120,38 @@ class CodePromoFooter extends Module {
         $helper->tpl_vars = array(
             'fields_value' => array(
                 'TEXTPROMO' => Configuration::get('TEXTPROMO'),
-                'CODEPROMO' => Configuration::get('CODEPROMO'),
+                'CODEPROMO' => Configuration::get('CODEPROMO')
             ),
         );
         return $helper->generateForm($fields_form);
+    }
+
+    public function hookDisplayHeader()
+    {
+        $this->context->controller->registerStylesheet(
+            'affichagecodepromo', //This id has to be unique
+            'modules/'.$this->name.'/views/css/affichagecodepromo.css',
+            array('media' => 'all', 'priority' => 1000)
+        );
+    }
+
+    public function hookDisplayTop($params) {
+        $this->context->smarty->assign(
+            array(
+                'textpromo'=> Configuration::get('TEXTPROMO'),
+                'codepromo'=> Configuration::get('CODEPROMO')
+            )
+        );
+        return $this->display(__FILE__, 'views/templates/front/affichagecodepromo.tpl');
+    }
+
+    public function hookDisplayLeftColumn($params) {
+        $this->context->smarty->assign(
+            array(
+                'textpromo'=> Configuration::get('TEXTPROMO'),
+                'codepromo'=> Configuration::get('CODEPROMO')
+            )
+        );
+        return $this->display(__FILE__, 'views/templates/front/affichagecodepromo.tpl');
     }
 }

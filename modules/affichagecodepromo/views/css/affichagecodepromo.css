@@ -1,0 +1,8 @@
+.codePromo {
+    font-weight: bold;
+}
+
+.blockCodePromoFooter {
+    display: flex;
+    justify-content: end;
+}
